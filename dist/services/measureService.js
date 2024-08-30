@@ -13,10 +13,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const measureModel_1 = __importDefault(require("../models/measureModel"));
+const axios_1 = __importDefault(require("axios"));
 class MeasureService {
     createMeasure(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield measureModel_1.default.create(data);
+            const response = yield axios_1.default.post(process.env.LLM_SERVICE_URL, data);
+            const { measure_value, image_url, measure_uuid } = response.data;
+            return yield measureModel_1.default.create({
+                measure_uuid,
+                customer_code: data.customer_code,
+                measure_datetime: data.measure_datetime,
+                measure_type: data.measure_type,
+                measure_value,
+                image_url,
+            });
         });
     }
     confirmMeasure(measure_uuid, confirmed_value) {
