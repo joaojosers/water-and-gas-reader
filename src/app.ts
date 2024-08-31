@@ -1,22 +1,19 @@
 import express from 'express';
+import measureRoutes from './routes/measureRoutes';
+import MeasureController from './controllers/measureController';
+import MeasureService from './services/measureService';
+
 const app = express();
 
 // Middleware to parse JSON request bodies
 app.use(express.json());
 
-// Define the POST route for /upload
-app.post('/upload', (req, res) => {
-  const { image, customer_code, measure_datetime, measure_type } = req.body;
+// Initialize the MeasureService and MeasureController
+const measureService = new MeasureService(); // Assuming you have a MeasureService class
+const measureController = new MeasureController(measureService);
 
-  // Validate the request body
-  if (!image || !customer_code || !measure_datetime || !measure_type) {
-    return res.status(400).json({ error: 'All fields are required' });
-  }
-
-  // Process the request (for example, save the data or perform some action)
-  // Here we just send a success response for demonstration purposes
-  res.status(200).json({ message: 'Upload successful', data: req.body });
-});
+// Add measure routes to the app
+app.use('/', measureRoutes(measureController)); // Pass the initialized controller
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

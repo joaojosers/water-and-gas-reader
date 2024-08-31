@@ -8,6 +8,7 @@ class MeasureController {
     this.measureService = measureService;
   }
 
+   
   public createMeasure = async (req: Request, res: Response): Promise<Response> => {
     try {
       const measure = await this.measureService.createMeasure(req.body);
