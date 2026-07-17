@@ -14,9 +14,19 @@ class MeasureController {
         this.createMeasure = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const measure = yield this.measureService.createMeasure(req.body);
-                return res.status(200).json(measure);
+                return res.status(200).json({
+                    image_url: measure.image_url,
+                    measure_value: measure.measure_value,
+                    measure_uuid: measure.measure_uuid
+                });
             }
             catch (error) {
+                if (error.message === 'DOUBLE_REPORT') {
+                    return res.status(409).json({
+                        error_code: 'DOUBLE_REPORT',
+                        error_description: 'Leitura do mês já realizada'
+                    });
+                }
                 return res.status(400).json({ error_code: 'INVALID_DATA', error_description: error.message });
             }
         });
